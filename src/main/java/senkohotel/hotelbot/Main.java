@@ -4,6 +4,7 @@ import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.Permission;
+import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +32,7 @@ public class Main {
         JDABuilder jda = JDABuilder.createDefault(loadToken());
         jda.enableIntents(EnumSet.allOf(GatewayIntent.class));
         jda.setRawEventsEnabled(true);
+        jda.setActivity(Activity.watching("over the hotel"));
         bot = jda.build();
         bot.addEventListener(new MessageListener());
         bot.addEventListener(new SlashCommandListener());
