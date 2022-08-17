@@ -2,8 +2,8 @@ plugins {
     id 'java'
 }
 
-group 'senkohotel.hotelbot'
-version '1.0.0'
+group 'senkohotel.senko'
+version ''
 
 repositories {
     mavenCentral()

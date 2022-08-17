@@ -3,6 +3,7 @@ package senkohotel.hotelbot;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,10 +18,10 @@ import java.nio.file.Path;
 import java.util.EnumSet;
 
 public class Main {
-    public static String[] prefix = {"bot "};
+    public static String[] prefix = {"senko ", "semk ", "s?"};
     public static JDA bot;
-    public static int accentColor = 0xFFFFFF;
-    public static Logger LOG = LoggerFactory.getLogger("hotelbot");
+    public static int accentColor = 0xfdc964;
+    public static Logger LOG = LoggerFactory.getLogger("senko");
     public static boolean debug = false; // just adds the slash commands instantly
 
     public static void main(String[] args) throws LoginException {
@@ -39,7 +40,7 @@ public class Main {
 
     static String loadToken() {
         try {
-            return JsonParser.parseString(Files.readString(Path.of("config/bot.json"))).getAsJsonObject().get("token").getAsString();
+            return JsonParser.parseString(Files.readString(Path.of("config/senko.json"))).getAsJsonObject().get("token").getAsString();
         } catch (Exception ex) {
             System.out.println("Failed to load token");
             return "";

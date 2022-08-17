@@ -1,2 +1,2 @@
-# HotelBot
-The base template for all Hotel bots
+# Senko
+Moderation for `Senko's Hotel`
