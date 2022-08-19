@@ -91,6 +91,8 @@ public class Canvas {
     }
 
     public static void render(MessageChannel channel) {
+        channel.sendTyping().complete();
+
         BufferedImage img = new BufferedImage(canvasSize, canvasSize, BufferedImage.TYPE_INT_RGB);
 
         Graphics2D g = img.createGraphics();
