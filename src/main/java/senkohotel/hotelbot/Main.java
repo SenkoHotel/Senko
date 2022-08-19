@@ -3,7 +3,6 @@ package senkohotel.hotelbot;
 import com.google.gson.JsonParser;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
-import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.requests.GatewayIntent;
 import org.slf4j.Logger;
@@ -12,6 +11,7 @@ import senkohotel.hotelbot.commands.CommandList;
 import senkohotel.hotelbot.commands.SlashCommandList;
 import senkohotel.hotelbot.listeners.MessageListener;
 import senkohotel.hotelbot.listeners.SlashCommandListener;
+import senkohotel.senko.fun.canvas.Canvas;
 
 import javax.security.auth.login.LoginException;
 import java.nio.file.Files;
@@ -28,6 +28,8 @@ public class Main {
     public static void main(String[] args) throws LoginException {
         CommandList.initList();
         SlashCommandList.initList();
+        Canvas.createEmpty();
+        Canvas.readFile();
 
         JDABuilder jda = JDABuilder.createDefault(loadToken());
         jda.enableIntents(EnumSet.allOf(GatewayIntent.class));
