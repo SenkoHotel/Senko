@@ -11,10 +11,14 @@ import org.jetbrains.annotations.NotNull;
 import senkohotel.hotelbot.Main;
 import senkohotel.hotelbot.commands.CommandList;
 import senkohotel.hotelbot.utils.MessageUtils;
+import senkohotel.senko.moderation.AutoMod;
 import senkohotel.senko.util.AfkUtils;
 
 public class MessageListener extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent msg) {
+        if (AutoMod.check(msg))
+            return;
+
         if (!AfkUtils.isAfk(msg.getAuthor().getId()).equals("")) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle(msg.getAuthor().getAsTag() + " is no longer afk!")
