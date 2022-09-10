@@ -45,7 +45,13 @@ public class Canvas {
         int y = 0;
 
         for (String line : lines) {
+            if (y >= canvasSize)
+                break;
+
             for (String pixel : line.split(",")) {
+                if (x >= canvasSize)
+                    break;
+
                 int color = Integer.parseInt(pixel);
                 canvas.get(y).set(x, color);
                 x++;
