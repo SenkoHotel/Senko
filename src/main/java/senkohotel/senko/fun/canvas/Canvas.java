@@ -15,9 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Canvas {
-    static List<List<Integer>> canvas = new ArrayList<>();
+    private static final List<List<Integer>> canvas = new ArrayList<>();
+    private static final int scaleFactor = 4;
 
-    static int canvasSize = 64;
+    public static boolean loaded = false;
+    public final static int canvasSize = 64;
+    public final static File canvasFile = new File("canvas.png");
 
     public static void createEmpty() {
         for (int y = 0; y < canvasSize; y++) {
@@ -32,73 +35,30 @@ public class Canvas {
     }
 
     public static void readFile() {
-        String raw;
         try {
-            raw = Files.readString(Path.of("canvas.csv"));
-        } catch (Exception ex) {
-            Main.LOG.error("Failed to read canvas", ex);
-            return;
-        }
+            BufferedImage image = ImageIO.read(canvasFile);
+            for (int y = 0; y < canvasSize; y++) {
+                List<Integer> row = new ArrayList<>();
 
-        String[] lines = raw.split("\n");
-        int x = 0;
-        int y = 0;
+                for (int x = 0; x < canvasSize; x++) {
+                    row.add(image.getRGB(x * scaleFactor, y * scaleFactor));
+                }
 
-        for (String line : lines) {
-            if (y >= canvasSize)
-                break;
-
-            for (String pixel : line.split(",")) {
-                if (x >= canvasSize)
-                    break;
-
-                int color = Integer.parseInt(pixel);
-                canvas.get(y).set(x, color);
-                x++;
+                canvas.set(y, row);
             }
-            x = 0;
-            y++;
+            loaded = true;
+        } catch (Exception ex) {
+            Main.LOG.error("Failed to read canvas file");
         }
     }
 
-    public static void setPixel(int x, int y, int color) {
+    public static boolean setPixel(int x, int y, int color) {
+        if (x < 0 || x >= canvasSize || y < 0 || y >= canvasSize) return false;
         canvas.get(y).set(x, color);
+        return true;
     }
 
-    public static void saveCanvas() {
-        int x = 0;
-        int y = 0;
-
-        String canvasFile = "";
-
-        for (List<Integer> row : canvas) {
-            for (Integer pixel : row) {
-                if (x != 0)
-                    canvasFile += ",";
-
-                canvasFile += pixel + "";
-
-                x++;
-            }
-            x = 0;
-            y++;
-
-            if (y != canvasSize)
-                canvasFile += "\n";
-        }
-
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter("canvas.csv"));
-            writer.write(canvasFile);
-            writer.close();
-        } catch (Exception ex) {
-            Main.LOG.error("Couldn't save the canvas!", ex);
-        }
-    }
-
-    public static void render(MessageChannel channel) {
-        channel.sendTyping().complete();
-
+    public static void render() {
         BufferedImage img = new BufferedImage(canvasSize, canvasSize, BufferedImage.TYPE_INT_RGB);
 
         Graphics2D g = img.createGraphics();
@@ -111,17 +71,13 @@ public class Canvas {
         }
 
         g.dispose();
-        Image imgScaled = img.getScaledInstance(canvasSize * 4, canvasSize * 4, Image.SCALE_DEFAULT);
-        BufferedImage imgScaledBuffer = new BufferedImage(canvasSize * 4, canvasSize * 4, BufferedImage.TYPE_INT_RGB);
+        Image imgScaled = img.getScaledInstance(canvasSize * scaleFactor, canvasSize * scaleFactor, Image.SCALE_DEFAULT);
+        BufferedImage imgScaledBuffer = new BufferedImage(canvasSize * scaleFactor, canvasSize * scaleFactor, BufferedImage.TYPE_INT_RGB);
         imgScaledBuffer.getGraphics().drawImage(imgScaled, 0, 0, null);
 
-        File file = new File("canvas.png");
-
         try {
-            ImageIO.write(imgScaledBuffer, "png", file);
+            ImageIO.write(imgScaledBuffer, "png", canvasFile);
         } catch (Exception ignored) {
         }
-
-        channel.sendFile(new File("canvas.png")).complete();
     }
 }
