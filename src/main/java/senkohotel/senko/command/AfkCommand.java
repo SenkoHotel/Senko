@@ -16,19 +16,6 @@ public class AfkCommand extends Command {
     public void exec(MessageReceivedEvent msg, String[] args) throws Exception {
         super.exec(msg, args);
 
-        String reason = "No reason provided.";
-
-        if (args.length > 0) {
-            reason = String.join(" ", args);
-        }
-
-        EmbedBuilder embed = new EmbedBuilder()
-                .setTitle(msg.getAuthor().getAsTag() + " went AFK!")
-                .setColor(Main.accentColor)
-                .addField("Reason", reason, false);
-
-        AfkUtils.addUser(msg.getAuthor().getId(), reason);
-
-        MessageUtils.reply(msg, embed);
+        MessageUtils.reply(msg, "This has been moved to a slash command. Please use /afk instead.");
     }
 }

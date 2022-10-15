@@ -6,8 +6,8 @@ import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 import senkohotel.hotelbot.Main;
 import senkohotel.hotelbot.commands.SlashCommand;
 
-public class SayCommand extends SlashCommand {
-    public SayCommand() {
+public class SaySlashCommand extends SlashCommand {
+    public SaySlashCommand() {
         name = "say";
         description = "Says something";
         options.add(new OptionData(OptionType.STRING, "message", "The message to say", true));
