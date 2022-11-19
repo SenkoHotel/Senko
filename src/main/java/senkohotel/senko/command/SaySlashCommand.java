@@ -1,5 +1,6 @@
 package senkohotel.senko.command;
 
+import net.dv8tion.jda.api.interactions.commands.OptionMapping;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -21,12 +22,19 @@ public class SaySlashCommand extends SlashCommand {
             return;
         }
 
-        String message = interact.getOption("message").getAsString();
-        String messageid = interact.getOption("messageid") != null ? interact.getOption("messageid").getAsString() : null;
+        OptionMapping messageIDMapping = interact.getOption("messageid");
+        OptionMapping messageMapping = interact.getOption("message");
+
+        if (messageMapping == null) {
+            interact.reply("Missing message content??").setEphemeral(true).complete();
+            return;
+        }
+
+        String message = messageMapping.getAsString();
 
         try {
-            if (messageid != null) {
-                interact.getChannel().retrieveMessageById(messageid).queue(msg -> {
+            if (messageIDMapping != null) {
+                interact.getChannel().retrieveMessageById(messageIDMapping.getAsString()).queue(msg -> {
                     msg.reply(message).queue();
                 });
             } else {
@@ -34,7 +42,7 @@ public class SaySlashCommand extends SlashCommand {
             }
 
             interact.reply("Sent message!").setEphemeral(true).complete();
-            Main.LOG.info(interact.getUser().getAsTag() + " said '" + message + (messageid != null ? "' replying to " + messageid : "'") + " in " + interact.getChannel().getName() + " (" + interact.getChannel().getId() + ")");
+            Main.LOG.info(interact.getUser().getAsTag() + " said '" + message + "' " + (messageIDMapping != null ? "replying to " + messageIDMapping.getAsString() : "'") + "in " + interact.getChannel().getName() + " (" + interact.getChannel().getId() + ")");
         } catch (Exception ex) {
             interact.reply("Failed to send message!").setEphemeral(true).complete();
         }

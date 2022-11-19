@@ -24,12 +24,12 @@ public class AfkSlashCommand extends SlashCommand {
         if (reasonMapping != null) reason = reasonMapping.getAsString();
 
         EmbedBuilder embed = new EmbedBuilder()
-                .setTitle(interact.getUser().getAsTag() + " went AFK!")
+                .setTitle("You are now AFK.")
                 .setColor(Main.accentColor)
                 .addField("Reason", reason, false);
 
         AfkUtils.addUser(interact.getUser().getId(), reason);
 
-        reply(interact, embed);
+        interact.replyEmbeds(embed.build()).setEphemeral(true).queue();
     }
 }

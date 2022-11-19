@@ -14,6 +14,8 @@ import senkohotel.hotelbot.utils.MessageUtils;
 import senkohotel.senko.moderation.AutoMod;
 import senkohotel.senko.util.AfkUtils;
 
+import java.util.concurrent.TimeUnit;
+
 public class MessageListener extends ListenerAdapter {
     public void onMessageReceived(@NotNull MessageReceivedEvent msg) {
         if (AutoMod.check(msg))
@@ -22,9 +24,14 @@ public class MessageListener extends ListenerAdapter {
         if (!AfkUtils.isAfk(msg.getAuthor().getId()).equals("")) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle(msg.getAuthor().getAsTag() + " is no longer afk!")
-                    .setColor(Main.accentColor);
+                    .setColor(Main.accentColor)
+                    .setFooter("This message will be deleted in 10 seconds.");
+
             AfkUtils.removeUser(msg.getAuthor().getId());
-            MessageUtils.reply(msg, embed);
+
+            msg.getChannel().sendMessageEmbeds(embed.build()).queue((message) -> {
+                message.delete().queueAfter(10, TimeUnit.SECONDS);
+            });
         }
 
         String content = msg.getMessage().getContentRaw().toLowerCase();
@@ -59,9 +66,13 @@ public class MessageListener extends ListenerAdapter {
                 EmbedBuilder embed = new EmbedBuilder()
                         .setTitle(u.getAsTag() + " is currently AFK!")
                         .setColor(Main.accentColor)
-                        .addField("Reason", reason, false);
+                        .addField("Reason", reason, false)
+                        .setFooter("This message will be deleted in 10 seconds.");
 
-                MessageUtils.reply(msg, embed);
+
+                msg.getChannel().sendMessageEmbeds(embed.build()).queue((message) -> {
+                    message.delete().queueAfter(10, TimeUnit.SECONDS);
+                });
             }
         }
     }

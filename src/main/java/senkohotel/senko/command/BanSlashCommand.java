@@ -1,6 +1,7 @@
 package senkohotel.senko.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.Member;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
@@ -20,7 +21,7 @@ public class BanSlashCommand extends SlashCommand {
     }
 
     public void exec(SlashCommandInteraction interact) {
-        if (!UserUtils.hasRole(interact.getMember(), "792173231040757780")) {
+        if (!UserUtils.hasRole(interact.getMember(), "792173231040757780") || interact.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle("Only moderators can use this command!")
                     .setColor(0xFF5555);
@@ -41,13 +42,14 @@ public class BanSlashCommand extends SlashCommand {
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle("User banned! <:SK_cultured:792020838801997854>")
                     .addField("User", toBan.getName() + "#" + toBan.getDiscriminator(), true)
-                    .addField("Banned by", interact.getUser().getName() + "#" + interact.getUser().getDiscriminator(), true)
+                    .addField("Banned by", "<@" + interact.getUser().getId() + ">", true)
                     .addField("Reason", reason, false)
+                    .setColor(0xFF5555)
                     .setColor(Main.accentColor);
 
-            MessageUtils.send("825336003018489867", embed.setColor(0xFF5555)); // #public-logs
-            MessageUtils.send("898580934440394752", embed.setColor(0xFF5555)); // #mod-logs
-            reply(interact, embed);
+            MessageUtils.send("825336003018489867", embed); // #public-logs
+            MessageUtils.send("898580934440394752", embed); // #mod-logs
+            interact.replyEmbeds(embed.build()).setEphemeral(true).queue();
         } catch (Exception ex) {
             ex.printStackTrace();
             EmbedBuilder embed = new EmbedBuilder()

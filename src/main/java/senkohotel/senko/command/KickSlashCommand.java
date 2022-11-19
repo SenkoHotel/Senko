@@ -1,6 +1,7 @@
 package senkohotel.senko.command;
 
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.Permission;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.SlashCommandInteraction;
@@ -18,7 +19,7 @@ public class KickSlashCommand extends SlashCommand {
     }
 
     public void exec(SlashCommandInteraction interact) {
-        if (!UserUtils.hasRole(interact.getMember(), "792173231040757780")) {
+        if (!UserUtils.hasRole(interact.getMember(), "792173231040757780")|| interact.getMember().hasPermission(Permission.KICK_MEMBERS)) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle("Only moderators can use this command!")
                     .setColor(0xFF5555);

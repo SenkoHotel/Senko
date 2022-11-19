@@ -39,6 +39,6 @@ public class SlowmodeSlashCommand extends SlashCommand {
                 .setColor(Main.accentColor)
                 .addField("Time", time + " seconds", false);
 
-        reply(interact, embed);
+        interact.replyEmbeds(embed.build()).setEphemeral(true).queue();
     }
 }
