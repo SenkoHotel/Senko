@@ -21,7 +21,7 @@ public class BanSlashCommand extends SlashCommand {
     }
 
     public void exec(SlashCommandInteraction interact) {
-        if (!UserUtils.hasRole(interact.getMember(), "792173231040757780") || interact.getMember().hasPermission(Permission.BAN_MEMBERS)) {
+        if (!UserUtils.hasRole(interact.getMember(), "792173231040757780") || !interact.getMember().hasPermission(Permission.BAN_MEMBERS)) {
             EmbedBuilder embed = new EmbedBuilder()
                     .setTitle("Only moderators can use this command!")
                     .setColor(0xFF5555);
