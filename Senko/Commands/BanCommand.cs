@@ -10,7 +10,7 @@ public class BanCommand : SlashCommand
 {
     public override string Name => "ban";
     public override string Description => "Bans a user from the server.";
-    public override Permissions Permissions => Permissions.BanMembers;
+    public override Permissions? Permission => Permissions.BanMembers;
 
     public override List<SlashOption> Options => new()
     {

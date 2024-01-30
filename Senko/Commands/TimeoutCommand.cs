@@ -10,7 +10,7 @@ public class TimeoutCommand : SlashCommand
 {
     public override string Name => "timeout";
     public override string Description => "Times out a user from the server.";
-    public override Permissions Permissions => Permissions.ModerateMembers;
+    public override Permissions? Permission => Permissions.ModerateMembers;
 
     public override List<SlashOption> Options => new()
     {
