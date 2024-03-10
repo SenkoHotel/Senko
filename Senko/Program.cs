@@ -34,6 +34,9 @@ public static class Program
 
     private static async Task onMessage(DiscordClient sender, MessageCreateEventArgs args)
     {
+        if (args.Author.IsBot)
+            return;
+
         if (suggestion_channels.Contains(args.Channel.Id))
         {
             var embed = new DiscordEmbedBuilder()
