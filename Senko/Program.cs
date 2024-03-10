@@ -41,6 +41,7 @@ public static class Program
         {
             var embed = new DiscordEmbedBuilder()
                         .WithAuthor(args.Author.Username, iconUrl: args.Author.AvatarUrl)
+                        .WithColor(new DiscordColor("#fdca64"))
                         .WithDescription(args.Message.Content);
 
             var message = await args.Channel.SendMessageAsync(embed.Build());
