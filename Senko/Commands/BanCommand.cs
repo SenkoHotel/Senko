@@ -4,6 +4,7 @@ using HotelLib;
 using HotelLib.Commands;
 using HotelLib.Logging;
 using HotelLib.Utils;
+using Senko.Constants;
 
 namespace Senko.Commands;
 
@@ -31,14 +32,8 @@ public class BanCommand : SlashCommand
             member.BanAsync(delete, reason);
             interaction.Reply($"Banned {member.Username} ({member.Id}) for **{reason}**.", true);
 
-            var embed = new DiscordEmbedBuilder()
-                        .WithTitle("User banned! <:SK_cultured:792020838801997854>")
-                        .AddField("User", member.Mention, true)
-                        .AddField("Banned by", interaction.User.Mention, true)
-                        .AddField("Reason", reason, true);
-
-            var channel = interaction.Guild.GetChannel(Program.MOD_LOG);
-            channel?.SendMessageAsync(embed.Build());
+            if (Program.ModLogChannel != null)
+                Program.ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(member, interaction.User, reason));
         }
         catch (Exception e)
         {
