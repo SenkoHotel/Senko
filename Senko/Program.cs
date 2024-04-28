@@ -4,6 +4,7 @@ using DSharpPlus.EventArgs;
 using HotelLib;
 using HotelLib.Commands;
 using Senko.Commands;
+using Senko.Database;
 
 namespace Senko;
 
@@ -12,18 +13,22 @@ public static class Program
     public const ulong MOD_LOG = 898580934440394752;
     public const ulong PUBLIC_LOG = 825336003018489867;
 
+    public static DiscordColor AccentColor => new("#fdca64");
+
     private static readonly ulong[] suggestion_channels = { 825400708316397628, 901062083217604638 };
 
     public static async Task Main()
     {
         var config = HotelBot.LoadConfig<Config>();
+        MongoDatabase.Initialize(config.MongoConnectionString, config.MongoDatabaseName);
 
         var bot = new HotelBot(config.Token)
         {
             Commands = new List<SlashCommand>
             {
                 new BanCommand(),
-                new TimeoutCommand()
+                new TimeoutCommand(),
+                new WarnCommand()
             }
         };
 
@@ -41,7 +46,7 @@ public static class Program
         {
             var embed = new DiscordEmbedBuilder()
                         .WithAuthor(args.Author.Username, iconUrl: args.Author.AvatarUrl)
-                        .WithColor(new DiscordColor("#fdca64"))
+                        .WithColor(AccentColor)
                         .WithDescription(args.Message.Content);
 
             var message = await args.Channel.SendMessageAsync(embed.Build());

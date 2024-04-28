@@ -2,6 +2,7 @@
 using DSharpPlus.Entities;
 using HotelLib;
 using HotelLib.Commands;
+using HotelLib.Logging;
 using HotelLib.Utils;
 
 namespace Senko.Commands;
@@ -43,7 +44,7 @@ public class TimeoutCommand : SlashCommand
         catch (Exception e)
         {
             interaction.Reply($"Failed to timeout {member.Username} ({member.Id}).");
-            Console.WriteLine(e);
+            Logger.Log(e, "Failed to timeout user.");
         }
     }
 }
