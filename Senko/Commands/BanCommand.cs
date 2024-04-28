@@ -27,6 +27,12 @@ public class BanCommand : SlashCommand
         var reason = interaction.GetString("reason") ?? "No reason provided.";
         var delete = interaction.GetInt("delete") ?? 3;
 
+        if (member.Id == interaction.User.Id)
+        {
+            interaction.Reply("You can't ban yourself silly.", true);
+            return;
+        }
+
         try
         {
             member.BanAsync(delete, reason);
