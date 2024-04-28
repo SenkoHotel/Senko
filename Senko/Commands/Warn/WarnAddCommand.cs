@@ -71,7 +71,7 @@ public class WarnAddCommand : SlashCommand
                        .AddField("Reason", reason)
                        .WithColor(Program.AccentColor);
 
-        var logChannel = interaction.Guild.GetChannel(Program.PUBLIC_LOG);
+        var logChannel = interaction.Guild.GetChannel(Program.MOD_LOG);
 
         if (logChannel != null)
             await logChannel.SendMessageAsync(embed: logEmbed.Build());
