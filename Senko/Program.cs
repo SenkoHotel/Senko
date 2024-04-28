@@ -64,6 +64,10 @@ public static class Program
 
     private static async Task onBan(DiscordClient sender, GuildBanAddEventArgs args)
     {
+        // wait for audit log to update
+        // yes this is stupid. blame discord.
+        await Task.Delay(5000);
+
         var audit = await args.Guild.GetAuditLogsAsync(1, null, AuditLogActionType.Ban);
 
         // uh, weird edge case?
