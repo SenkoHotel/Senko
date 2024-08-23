@@ -19,7 +19,7 @@ public class ChatReviveCommand : SlashCommand
 
         if (current - last < hour)
         {
-            interaction.Reply($"Chat Revive ping is on cooldown. Next one is ready in <t:{last + hour}:R>.", true);
+            interaction.Reply($"Chat Revive ping is on cooldown. Next one is ready <t:{last + hour}:R>.", true);
             return;
         }
 
