@@ -31,6 +31,7 @@ public static class Program
             Commands = new List<SlashCommand>
             {
                 new BanCommand(),
+                new ChatReviveCommand(),
                 new TimeoutCommand(),
                 new WarnCommand()
             }
