@@ -114,7 +114,7 @@ public static class Program
                 return;
             }
 
-            const int star_requirement = 1;
+            const int star_requirement = 4;
 
             if (reactions.Count < star_requirement)
                 return;
