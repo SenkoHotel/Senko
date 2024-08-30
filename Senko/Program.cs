@@ -3,7 +3,10 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using HotelLib;
 using HotelLib.Commands;
+using HotelLib.Logging;
+using MongoDB.Driver;
 using Senko.Commands;
+using Senko.Components;
 using Senko.Constants;
 using Senko.Database;
 
@@ -11,13 +14,19 @@ namespace Senko;
 
 public static class Program
 {
-    public const ulong MOD_LOG = 898580934440394752;
-    public const ulong PUBLIC_LOG = 825336003018489867;
     private static readonly ulong[] suggestion_channels = { 825400708316397628, 901062083217604638 };
 
+    public const ulong MOD_LOG = 898580934440394752;
+    public const ulong PUBLIC_LOG = 825336003018489867;
+    public const ulong STARBOARD = 1278894932169461891;
+
+    private const string star_unicode = "⭐";
+
     public static DiscordColor AccentColor => new("#fdca64");
+
     public static DiscordChannel? PublicLogChannel => bot.Client.GetChannelAsync(PUBLIC_LOG).Result;
     public static DiscordChannel? ModLogChannel => bot.Client.GetChannelAsync(MOD_LOG).Result;
+    public static DiscordChannel? StarboardChannel => bot.Client.GetChannelAsync(STARBOARD).Result;
 
     private static HotelBot bot = null!;
 
@@ -39,6 +48,7 @@ public static class Program
 
         bot.Client.GuildBanAdded += onBan;
         bot.Client.MessageCreated += onMessage;
+        bot.Client.MessageReactionAdded += onReactionAdd;
         await bot.Start();
     }
 
@@ -60,6 +70,109 @@ public static class Program
             await message.CreateReactionAsync(DiscordEmoji.FromName(sender, ":x:"));
 
             await args.Message.DeleteAsync();
+        }
+    }
+
+    private static async Task onReactionAdd(DiscordClient sender, MessageReactionAddEventArgs args)
+    {
+        try
+        {
+            if (StarboardChannel is null)
+                return;
+
+            var star = DiscordEmoji.FromUnicode(star_unicode);
+
+            if (args.Emoji != star)
+                return;
+
+            var message = await args.Channel.GetMessageAsync(args.Message.Id);
+
+            var reactions = await message.GetReactionsAsync(star, 50);
+
+            if (reactions is null)
+                return;
+
+            var count = reactions.Count;
+
+            var collection = MongoDatabase.GetCollection<StarboardMessage>("starboard");
+            var existing = collection.Find(x => x.MessageID == message.Id).FirstOrDefault();
+
+            if (existing is not null)
+            {
+                var sb = await StarboardChannel.GetMessageAsync(existing.StarboardMessageID);
+
+                if (sb is null)
+                    return;
+
+                await sb.ModifyAsync(builder =>
+                {
+                    builder.Content = $"**{count}** {star_unicode}";
+                });
+
+                existing.Count = count;
+                await collection.ReplaceOneAsync(msg => msg.MessageID == existing.MessageID, existing);
+                return;
+            }
+
+            const int star_requirement = 1;
+
+            if (reactions.Count < star_requirement)
+                return;
+
+            var embed = new DiscordEmbedBuilder
+            {
+                Description = message.Content,
+                Author = new DiscordEmbedBuilder.EmbedAuthor
+                {
+                    IconUrl = message.Author.AvatarUrl,
+                    Name = message.Author.Username
+                }
+            };
+
+            embed.AddField("Channel", $"<#{args.Channel.Id}>", true);
+            embed.AddField("Original Message", $"[Click to jump!]({message.JumpLink})", true);
+
+            var builder = new DiscordMessageBuilder
+            {
+                Content = $"**{count}** {star_unicode}\n",
+                Embed = embed
+            };
+
+            foreach (var attachment in message.Attachments)
+            {
+                try
+                {
+                    using var http = new HttpClient();
+                    using var res = await http.GetAsync(attachment.Url);
+                    var ms = new MemoryStream();
+                    await res.Content.CopyToAsync(ms);
+                    ms.Seek(0, SeekOrigin.Begin);
+                    builder.AddFile(attachment.FileName, ms);
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex, "Failed to download attachment!");
+                }
+            }
+
+            var result = await StarboardChannel.SendMessageAsync(builder);
+
+            if (result is null)
+            {
+                Logger.Log($"Failed to send message!", LogLevel.Error);
+                return;
+            }
+
+            await collection.InsertOneAsync(new StarboardMessage
+            {
+                MessageID = message.Id,
+                StarboardMessageID = result.Id,
+                Count = count
+            });
+        }
+        catch (Exception e)
+        {
+            Logger.Log(e);
         }
     }
 
