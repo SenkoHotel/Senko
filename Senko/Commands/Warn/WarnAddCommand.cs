@@ -54,7 +54,7 @@ public class WarnAddCommand : SlashCommand
                               .WithTitle("You have been warned.")
                               .WithDescription($"You have been warned in **{interaction.Guild.Name}**!")
                               .AddField("Reason", reason)
-                              .WithColor(Program.AccentColor);
+                              .WithColor(bot.AccentColor);
 
                 await user.SendMessageAsync(embed: dmEmbed.Build());
             }
@@ -69,7 +69,7 @@ public class WarnAddCommand : SlashCommand
                        .AddField("User", user.Mention)
                        .AddField("Moderator", interaction.User.Mention)
                        .AddField("Reason", reason)
-                       .WithColor(Program.AccentColor);
+                       .WithColor(bot.AccentColor);
 
         var logChannel = interaction.Guild.GetChannel(Program.MOD_LOG);
 

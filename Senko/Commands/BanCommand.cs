@@ -39,7 +39,7 @@ public class BanCommand : SlashCommand
             interaction.Reply($"Banned {member.Username} ({member.Id}) for **{reason}**.", true);
 
             if (Program.ModLogChannel != null)
-                Program.ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(member, interaction.User, reason));
+                Program.ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(bot, member, interaction.User, reason));
         }
         catch (Exception e)
         {

@@ -22,8 +22,6 @@ public static class Program
 
     private const string star_unicode = "⭐";
 
-    public static DiscordColor AccentColor => new("#fdca64");
-
     public static DiscordChannel? PublicLogChannel => bot.Client.GetChannelAsync(PUBLIC_LOG).Result;
     public static DiscordChannel? ModLogChannel => bot.Client.GetChannelAsync(MOD_LOG).Result;
     public static DiscordChannel? StarboardChannel => bot.Client.GetChannelAsync(STARBOARD).Result;
@@ -37,6 +35,7 @@ public static class Program
 
         bot = new HotelBot(config.Token)
         {
+            AccentColor = new DiscordColor("#fdca64"),
             Commands = new List<SlashCommand>
             {
                 new BanCommand(),
@@ -61,7 +60,7 @@ public static class Program
         {
             var embed = new DiscordEmbedBuilder()
                         .WithAuthor(args.Author.Username, iconUrl: args.Author.AvatarUrl)
-                        .WithColor(AccentColor)
+                        .WithColor(bot.AccentColor)
                         .WithDescription(args.Message.Content);
 
             var message = await args.Channel.SendMessageAsync(embed.Build());
@@ -192,10 +191,10 @@ public static class Program
         var reason = entry.Reason ?? "*No reason provided.*";
 
         if (PublicLogChannel != null)
-            await PublicLogChannel.SendMessageAsync(EmbedPresets.CreatePublicLogBan(args.Member, reason));
+            await PublicLogChannel.SendMessageAsync(EmbedPresets.CreatePublicLogBan(bot, args.Member, reason));
 
         // if the ban didn't come from the bot, try to log it in the mod log
         if (entry.UserResponsible.Id != bot.Client.CurrentUser.Id && ModLogChannel != null)
-            await ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(args.Member, entry.UserResponsible, reason));
+            await ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(bot, args.Member, entry.UserResponsible, reason));
     }
 }

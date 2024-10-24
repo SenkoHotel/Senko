@@ -38,7 +38,7 @@ public class WarnListCommand : SlashCommand
         var embed = new DiscordEmbedBuilder
         {
             Title = $"Warns of {user.Username}",
-            Color = Program.AccentColor
+            Color = bot.AccentColor
         };
 
         foreach (var warn in warns)
