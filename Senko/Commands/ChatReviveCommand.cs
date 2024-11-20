@@ -1,4 +1,5 @@
-﻿using DSharpPlus.Entities;
+﻿using DSharpPlus;
+using DSharpPlus.Entities;
 using HotelLib;
 using HotelLib.Commands;
 using HotelLib.Utils;
@@ -24,6 +25,9 @@ public class ChatReviveCommand : SlashCommand
         }
 
         last = current;
-        await interaction.Reply("<@&806802654189715486>");
+        await interaction.CreateResponseAsync(InteractionResponseType.ChannelMessageWithSource, new DiscordInteractionResponseBuilder
+        {
+            Content = "<@&806802654189715486>"
+        }.AddMention(new RoleMention(806802654189715486)));
     }
 }
