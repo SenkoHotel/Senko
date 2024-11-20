@@ -17,13 +17,13 @@ public class WarnRemoveCommand : SlashCommand
         new SlashOption("warn", "The warn to remove.", ApplicationCommandOptionType.Integer, true)
     };
 
-    public override void Handle(HotelBot bot, DiscordInteraction interaction)
+    public override async Task Handle(HotelBot bot, DiscordInteraction interaction)
     {
         var warnId = interaction.GetInt("warn");
 
         if (warnId is null)
         {
-            interaction.Reply("Invalid arguments.", true);
+            await interaction.Reply("Invalid arguments.", true);
             return;
         }
 
@@ -31,11 +31,11 @@ public class WarnRemoveCommand : SlashCommand
 
         if (warn is null)
         {
-            interaction.Reply("Warn not found.", true);
+            await interaction.Reply("Warn not found.", true);
             return;
         }
 
         WarnHelper.Remove(warn);
-        interaction.Reply("Warn removed.", true);
+        await interaction.Reply("Warn removed.", true);
     }
 }

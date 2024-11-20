@@ -17,13 +17,13 @@ public class WarnListCommand : SlashCommand
         new SlashOption("user", "The user to list the warns.", ApplicationCommandOptionType.User, true)
     };
 
-    public override async void Handle(HotelBot bot, DiscordInteraction interaction)
+    public override async Task Handle(HotelBot bot, DiscordInteraction interaction)
     {
         var user = await interaction.GetMember("user");
 
         if (user is null)
         {
-            interaction.Reply("Invalid arguments.", true);
+            await interaction.Reply("Invalid arguments.", true);
             return;
         }
 
@@ -31,7 +31,7 @@ public class WarnListCommand : SlashCommand
 
         if (warns.Count == 0)
         {
-            interaction.Reply("No warns found.", true);
+            await interaction.Reply("No warns found.", true);
             return;
         }
 
@@ -44,6 +44,6 @@ public class WarnListCommand : SlashCommand
         foreach (var warn in warns)
             embed.AddField($"#{warn.ID} {warn.Date:yyyy-MM-dd} ({warn.UserID})", warn.Reason);
 
-        interaction.ReplyEmbed(embed);
+        await interaction.ReplyEmbed(embed);
     }
 }

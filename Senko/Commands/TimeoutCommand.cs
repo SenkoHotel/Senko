@@ -20,7 +20,7 @@ public class TimeoutCommand : SlashCommand
         new SlashOption("reason", "The reason for the timeout.", ApplicationCommandOptionType.String, false)
     };
 
-    public override void Handle(HotelBot bot, DiscordInteraction interaction)
+    public override async Task Handle(HotelBot bot, DiscordInteraction interaction)
     {
         var member = interaction.GetMember("user").Result!;
         var length = interaction.GetInt("length") ?? 60;
@@ -30,7 +30,7 @@ public class TimeoutCommand : SlashCommand
         {
             var date = DateTime.Now.AddSeconds(length);
             member.TimeoutAsync(date, reason).Wait();
-            interaction.Reply($"Timed out {member.Username} ({member.Id}) for **{reason}**.", true);
+            await interaction.Reply($"Timed out {member.Username} ({member.Id}) for **{reason}**.", true);
 
             var embed = new DiscordEmbedBuilder()
                         .WithTitle("User timed out! <:SK_cultured:792020838801997854>")
@@ -43,7 +43,7 @@ public class TimeoutCommand : SlashCommand
         }
         catch (Exception e)
         {
-            interaction.Reply($"Failed to timeout {member.Username} ({member.Id}).");
+            await interaction.Reply($"Failed to timeout {member.Username} ({member.Id}).");
             Logger.Log(e, "Failed to timeout user.");
         }
     }

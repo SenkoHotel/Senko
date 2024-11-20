@@ -21,7 +21,7 @@ public class BanCommand : SlashCommand
         new SlashOption("delete", "Delete amount of days of messages.", ApplicationCommandOptionType.Integer, false)
     };
 
-    public override void Handle(HotelBot bot, DiscordInteraction interaction)
+    public override async Task Handle(HotelBot bot, DiscordInteraction interaction)
     {
         var member = interaction.GetMember("user").Result!;
         var reason = interaction.GetString("reason") ?? "No reason provided.";
@@ -29,21 +29,21 @@ public class BanCommand : SlashCommand
 
         if (member.Id == interaction.User.Id)
         {
-            interaction.Reply("You can't ban yourself silly.", true);
+            await interaction.Reply("You can't ban yourself silly.", true);
             return;
         }
 
         try
         {
-            member.BanAsync(delete, reason);
-            interaction.Reply($"Banned {member.Username} ({member.Id}) for **{reason}**.", true);
+            await member.BanAsync(delete, reason);
+            await interaction.Reply($"Banned {member.Username} ({member.Id}) for **{reason}**.", true);
 
             if (Program.ModLogChannel != null)
-                Program.ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(bot, member, interaction.User, reason));
+                await Program.ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(bot, member, interaction.User, reason));
         }
         catch (Exception e)
         {
-            interaction.Reply($"Failed to ban {member.Username} ({member.Id}).");
+            await interaction.Reply($"Failed to ban {member.Username} ({member.Id}).");
             Logger.Log(e, "Failed to ban user.");
         }
     }

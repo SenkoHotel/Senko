@@ -12,18 +12,18 @@ public class ChatReviveCommand : SlashCommand
 
     private long last;
 
-    public override void Handle(HotelBot bot, DiscordInteraction interaction)
+    public override async Task Handle(HotelBot bot, DiscordInteraction interaction)
     {
         var current = DateTimeOffset.Now.ToUnixTimeSeconds();
         var hour = TimeSpan.FromHours(1).TotalSeconds;
 
         if (current - last < hour)
         {
-            interaction.Reply($"Chat Revive ping is on cooldown. Next one is ready <t:{last + hour}:R>.", true);
+            await interaction.Reply($"Chat Revive ping is on cooldown. Next one is ready <t:{last + hour}:R>.", true);
             return;
         }
 
         last = current;
-        interaction.Reply("<@&806802654189715486>");
+        await interaction.Reply("<@&806802654189715486>");
     }
 }

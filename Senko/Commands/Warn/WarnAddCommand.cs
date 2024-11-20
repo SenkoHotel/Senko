@@ -20,7 +20,7 @@ public class WarnAddCommand : SlashCommand
         new SlashOption("dm", "Whether to send a DM to the user.", ApplicationCommandOptionType.Boolean, true)
     };
 
-    public override async void Handle(HotelBot bot, DiscordInteraction interaction)
+    public override async Task Handle(HotelBot bot, DiscordInteraction interaction)
     {
         await interaction.AcknowledgeEphemeral();
 
