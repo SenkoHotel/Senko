@@ -8,7 +8,6 @@ using MongoDB.Driver;
 using Senko.Commands;
 using Senko.Components;
 using Senko.Constants;
-using Senko.Database;
 
 namespace Senko;
 
@@ -30,10 +29,9 @@ public static class Program
 
     public static async Task Main()
     {
-        var config = HotelBot.LoadConfig<Config>();
-        MongoDatabase.Initialize(config.MongoConnectionString, config.MongoDatabaseName);
+        MongoDatabase.Initialize("senko");
 
-        bot = new HotelBot(config.Token)
+        bot = new HotelBot
         {
             AccentColor = new DiscordColor("#fdca64"),
             Commands = new List<SlashCommand>
