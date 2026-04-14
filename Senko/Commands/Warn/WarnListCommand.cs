@@ -3,7 +3,7 @@ using DSharpPlus.Entities;
 using HotelLib;
 using HotelLib.Commands;
 using HotelLib.Utils;
-using Senko.Database.Helpers;
+using Senko.Database;
 
 namespace Senko.Commands.Warn;
 

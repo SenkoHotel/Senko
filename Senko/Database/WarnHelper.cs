@@ -2,7 +2,7 @@
 using MongoDB.Driver;
 using Senko.Components;
 
-namespace Senko.Database.Helpers;
+namespace Senko.Database;
 
 public static class WarnHelper
 {

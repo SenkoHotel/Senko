@@ -38,6 +38,7 @@ public static class Program
             {
                 new BanCommand(),
                 new ChatReviveCommand(),
+                new SnowballCommand(),
                 new TimeoutCommand(),
                 new WarnCommand()
             }

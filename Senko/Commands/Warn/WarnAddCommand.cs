@@ -4,7 +4,7 @@ using HotelLib;
 using HotelLib.Commands;
 using HotelLib.Utils;
 using Senko.Components;
-using Senko.Database.Helpers;
+using Senko.Database;
 
 namespace Senko.Commands.Warn;
 
