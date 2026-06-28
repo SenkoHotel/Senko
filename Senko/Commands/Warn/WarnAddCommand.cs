@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using System.Text;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using HotelLib;
 using HotelLib.Commands;
@@ -76,6 +77,11 @@ public class WarnAddCommand : SlashCommand
         if (logChannel != null)
             await logChannel.SendMessageAsync(embed: logEmbed.Build());
 
-        interaction.Followup($"Warned {user.Mention} for `{reason}`." + (dmFailed ? " (DM failed)" : ""), true);
+        var sb = new StringBuilder();
+        sb.AppendLine($"## Warned {user.Username}.");
+        sb.AppendLine($"**User ID**: {user.Id}");
+        sb.AppendLine($"**Reason**: {reason}");
+        sb.AppendLine($"**Sent DM**: {!dmFailed}");
+        await interaction.Followup(sb.ToString(), true);
     }
 }

@@ -1,4 +1,5 @@
-﻿using DSharpPlus;
+﻿using System.Text;
+using DSharpPlus;
 using DSharpPlus.Entities;
 using HotelLib;
 using HotelLib.Commands;
@@ -33,10 +34,35 @@ public class BanCommand : SlashCommand
             return;
         }
 
+        var sentDm = true;
+
+        try
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine("## You have been banned.");
+            sb.AppendLine($"You have been banned from **{interaction.Guild.Name}**!");
+            sb.AppendLine();
+            sb.AppendLine($"**Reason**: {reason}");
+            sb.AppendLine();
+            sb.AppendLine("You can appeal your ban at https://appeal.gg/senko-san.");
+
+            await member.SendMessageAsync(sb.ToString());
+        }
+        catch (Exception e)
+        {
+            sentDm = false;
+        }
+
         try
         {
             await member.BanAsync(delete, reason);
-            await interaction.Reply($"Banned {member.Username} ({member.Id}) for **{reason}**.", true);
+
+            var sb = new StringBuilder();
+            sb.AppendLine($"## Banned {member.Username}.");
+            sb.AppendLine($"**User ID**: {member.Id}");
+            sb.AppendLine($"**Reason**: {reason}");
+            sb.AppendLine($"**Sent DM**: {sentDm}");
+            await interaction.Reply(sb.ToString(), true);
 
             if (Program.ModLogChannel != null)
                 await Program.ModLogChannel.SendMessageAsync(EmbedPresets.CreateModLogBan(bot, member, interaction.User, reason));
